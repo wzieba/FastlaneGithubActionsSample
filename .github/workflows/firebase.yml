@@ -1,0 +1,25 @@
+name: Distribute to firebase
+
+on:
+  workflow_dispatch:
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+      - name: install firebase tool
+        run: |
+          yarn global add firebase-tools
+          echo "::add-path::$(yarn global bin)"
+      - name: setup fastlane
+        run: bundle install
+      - name: distribute to firebase
+        run: bundle exec fastlane android firebase_distribution
+        env:
+          FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+

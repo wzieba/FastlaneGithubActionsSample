@@ -1,0 +1,19 @@
+default_platform(:android)
+
+platform :android do
+
+  desc "Deploy to Firebase App Distribution"
+  lane :firebase_distribution do
+
+    sh("wget https://github.com/appium/appium/raw/master/sample-code/apps/ApiDemos-debug.apk")
+
+    firebase_app_distribution(
+      apk_path: sh("pwd | tr -d '\n'").concat("/ApiDemos-debug.apk"),
+      app: ENV["FIREBASE_APP_ID"],
+      firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+      groups: "",
+      release_notes: "Git commit: #{last_git_commit[:abbreviated_commit_hash]}",
+    )
+  end
+end
+
